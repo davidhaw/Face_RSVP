@@ -84,6 +84,20 @@ app.get('/account', function (req, res) {
    });
     
 });
+
+app.get('/createEvent', function (req, res) {
+  //  res.send("test");
+   //console.log(req.session.passport.user);
+   res.render('createEvent', {
+       
+     //  data: {
+           
+           
+    //   }
+       
+   });
+    
+});
 app.use(flash());
 
 module.exports = app;
@@ -115,7 +129,7 @@ app.post('/login', function(req, res, next) {
 
 app.post('/login', 
     passport.authenticate('local-login', {
-                                         failureRedirect: '/login',
+                                         failureRedirect: '/signIn.html',
                                          failureFlash: true }), 
     function(req, res) {
         res.redirect('/account')   

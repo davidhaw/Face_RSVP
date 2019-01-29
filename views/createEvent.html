@@ -1,7 +1,18 @@
 <h1>Create A Event</h1>
+
+<form action="/createEvent" method="post" multipart='urlencoded'>
 <p>Event Name </p> <input type="text" id="eventName">
-
+<br>
 <p>Custom Event Code (Optional) </p> <input type="text" id="eventCode">
-
-<!-- TO-DO GET DATE TO SHOW A CALANDER POPUP --> 
+<br>
 <p>Date</p> <input type="text" id="datepicker">
+ <script>
+  $( function() {
+    $( "#datepicker" ).datepicker();
+  } );
+  </script>
+    <br>
+    <br>
+<button type="btn primary" type="submit">Create Event</button>
+</form>
+
