@@ -3,9 +3,9 @@
 <form action="/createEvent" method="post" multipart='urlencoded'>
 <p>Event Name </p> <input type="text" id="eventName">
 <br>
-<p>Custom Event Code (Optional) </p> <input type="text" id="eventCode">
+<p>Custom Event Code (Optional) </p> <input type="text" id="eventCode" name="eventCode">
 <br>
-<p>Date</p> <input type="text" id="datepicker">
+<p>Date</p> <input type="text" id="datepicker" name="date">
  <script>
   $( function() {
     $( "#datepicker" ).datepicker();
@@ -15,4 +15,3 @@
     <br>
 <button type="btn primary" type="submit">Create Event</button>
 </form>
-

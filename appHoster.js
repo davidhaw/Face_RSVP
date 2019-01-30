@@ -37,13 +37,13 @@ passport.use('local-login', new LocalStrategy(function(username, password, done)
 }));
 
 passport.use('local-signup', new LocalStrategy(function(username, password, done) {
-    
+
     db.run("INSERT INTO users (username, password, salt) VALUES ($username, $password, $salt);", {
         $username: username,
         $password: password,
         $salt: 'ab'
     }, function(){return done(null, false)});
-    
+
 }));
 
 
@@ -74,29 +74,29 @@ app.set('view engine', 'html');
 app.get('/account', function (req, res) {
    console.log(req.session.passport.user);
    res.render('account', {
-       
+
        data: {
-           
+
             name: req.session.passport.user.username
-           
+
        }
-       
+
    });
-    
+
 });
 
 app.get('/createEvent', function (req, res) {
   //  res.send("test");
    //console.log(req.session.passport.user);
    res.render('createEvent', {
-       
+
      //  data: {
-           
-           
+
+
     //   }
-       
+
    });
-    
+
 });
 app.use(flash());
 
@@ -127,12 +127,12 @@ app.post('/login', function(req, res, next) {
   );
 */
 
-app.post('/login', 
+app.post('/login',
     passport.authenticate('local-login', {
                                          failureRedirect: '/signIn.html',
-                                         failureFlash: true }), 
+                                         failureFlash: true }),
     function(req, res) {
-        res.redirect('/account')   
+        res.redirect('/account')
 }
 );
 
@@ -140,4 +140,16 @@ app.post('/signup',
     passport.authenticate('local-signup', { successRedirect: 'account.html',
                                           failureRedirect: 'signup.html',
                                           failureFlash: true})
+);
+
+app.post('/createEvent', function (req, res) {
+
+  db.run("INSERT INTO events (date, creator, location, name, code) VALUES (date, $creator, $location, $name, $code);", {
+      $date: req.body.date,
+      $creator: 'to-do',
+      $location: 'to-do',
+      $name: req.body.eventName,
+      $code: req.body.eventCode,
+    }
+}
 );
