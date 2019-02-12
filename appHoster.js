@@ -98,6 +98,22 @@ app.get('/createEvent', function (req, res) {
    });
 
 });
+
+app.get('/event/:code', function (req, res) {
+   
+    db.each("SELECT * FROM events where code=\"" + req.params.code + "\"", function(err, row) {
+    
+        var data = row;
+        console.log(row);
+      res.render('event', {
+        
+            data: data
+            
+
+        });
+        
+    }); 
+});
 app.use(flash());
 
 module.exports = app;
@@ -144,12 +160,26 @@ app.post('/signup',
 
 app.post('/createEvent', function (req, res) {
 
-  db.run("INSERT INTO events (date, creator, location, name, code) VALUES (date, $creator, $location, $name, $code);", {
+  db.run("INSERT INTO events (date, creator, location, name, code) VALUES ($date, $creator, $location, $name, $code);", {
       $date: req.body.date,
       $creator: 'to-do',
       $location: 'to-do',
       $name: req.body.eventName,
       $code: req.body.eventCode,
-    }
-}
+    }        
 );
+    res.redirect('/event/' + req.body.eventCode);
+});
+
+app.post('/joinEvent',  function (req, res) {
+   
+    res.redirect('/event/' + req.body.eventCode);
+    
+});
+
+app.post('/RSVP', function (req, res) {
+   
+    console.log(req.session.passport.user);
+    console.log(req.body.eventCode);
+    
+});
