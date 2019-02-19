@@ -5,8 +5,16 @@ var session = require("express-session"),
     bodyParser = require("body-parser");
 var exphbs = require('express-handlebars');
 
+var mailgun = require("mailgun-js");
+var api_key = '306a1da49f5eadabb3281dfd5bc82974-9ce9335e-be97d48f';
+var DOMAIN = 'sandboxc59f606b9e144225878ddd0e4d2398ef.mailgun.org';
+var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
+
+
+
 var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy;
+var CustomStrategy = require('passport-custom').Strategy;
 var crypto = require('crypto');
 var sqlite3 = require('sqlite3');
 //https://stackoverflow.com/questions/23481817/node-js-passport-autentification-with-sqlite
@@ -18,31 +26,26 @@ function hashPassword(password, salt) {
   return hash.digest('hex');
 }
 
-const User = {
-    username: 'admin',
-    passwordHash: 'admin',
-    id:1
-
-}
-passport.use('local-login', new LocalStrategy(function(username, password, done) {
+passport.use('local-login', new CustomStrategy(function(req, done) {
   console.log("working 1");
-  db.get('SELECT salt FROM users WHERE username = ?', username, function(err, row) {
+  db.get('SELECT salt FROM users WHERE username = ?', req.body.username, function(err, row) {
     if (!row) return done(null, false);
     //var hash = hashPassword(password, row.salt);
-    db.get('SELECT username, id FROM users WHERE username = ? AND password = ?', username, password, function(err, row) {
+    db.get('SELECT username, id FROM users WHERE username = ? AND password = ?', req.body.username, req.body.password, function(err, row) {
       if (!row) return done(null, false);
       return done(null, row);
     });
   });
 }));
 
-passport.use('local-signup', new LocalStrategy(function(username, password, done) {
+passport.use('local-signup', new CustomStrategy(function(req, done) {
 
-    db.run("INSERT INTO users (username, password, salt) VALUES ($username, $password, $salt);", {
-        $username: username,
-        $password: password,
-        $salt: 'ab'
-    }, function(){return done(null, false)});
+    db.run("INSERT INTO users (username, password, salt, email) VALUES ($username, $password, $salt, $email);", {
+        $username: req.body.username,
+        $password: req.body.password,
+        $salt: 'ab',
+        $email: req.body.email
+    }, function(){return done(null, true)});
 
 }));
 
@@ -181,5 +184,17 @@ app.post('/RSVP', function (req, res) {
    
     console.log(req.session.passport.user);
     console.log(req.body.eventCode);
-    
-});
+    db.get("SELECT email FROM users WHERE username = ?",  req.session.passport.user.username, function (err, row){ 
+        console.log(row);
+        mailgun.messages().send(
+            {
+                from: 'Mailgun Sandbox <postmaster@sandboxc59f606b9e144225878ddd0e4d2398ef.mailgun.org>',
+                to: req.session.passport.user.username + ' ' + "<" + row.email.replace(/(\r\n|\n|\r)/gm, "") + ">"
+,
+                subject: 'Hello' +  req.session.passport.user.username,
+                text: 'Congratulations' +   req.session.passport.user.username +', you RSVPD for Blank!'
+            }, function (error, body) {
+                    console.log(body);
+                }) 
+    })
+    });
