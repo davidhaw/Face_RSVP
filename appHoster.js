@@ -103,19 +103,19 @@ app.get('/createEvent', function (req, res) {
 });
 
 app.get('/event/:code', function (req, res) {
-   
+
     db.each("SELECT * FROM events where code=\"" + req.params.code + "\"", function(err, row) {
-    
+
         var data = row;
         console.log(row);
       res.render('event', {
-        
+
             data: data
-            
+
 
         });
-        
-    }); 
+
+    });
 });
 app.use(flash());
 
@@ -169,22 +169,22 @@ app.post('/createEvent', function (req, res) {
       $location: 'to-do',
       $name: req.body.eventName,
       $code: req.body.eventCode,
-    }        
+    }
 );
     res.redirect('/event/' + req.body.eventCode);
 });
 
 app.post('/joinEvent',  function (req, res) {
-   
+
     res.redirect('/event/' + req.body.eventCode);
-    
+
 });
 
 app.post('/RSVP', function (req, res) {
-   
+
     console.log(req.session.passport.user);
     console.log(req.body.eventCode);
-    db.get("SELECT email FROM users WHERE username = ?",  req.session.passport.user.username, function (err, row){ 
+    db.get("SELECT email FROM users WHERE username = ?",  req.session.passport.user.username, function (err, row){
         console.log(row);
         mailgun.messages().send(
             {
@@ -195,6 +195,10 @@ app.post('/RSVP', function (req, res) {
                 text: 'Congratulations' +   req.session.passport.user.username +', you RSVPD for Blank!'
             }, function (error, body) {
                     console.log(body);
-                }) 
+                })
+    })
+    db.run("INSERT INTO rsvp (recipients, event) VALUES ($recipients, $event);", {
+        $recipients: req.session.passport.user,
+        $event: req.body.eventCode,
     })
     });
