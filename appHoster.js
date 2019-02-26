@@ -88,6 +88,20 @@ app.get('/account', function (req, res) {
 
 });
 
+app.get('/upload', function (req, res) {
+  //  res.send("test");
+   //console.log(req.session.passport.user);
+   res.render('upload', {
+
+     //  data: {
+
+
+    //   }
+
+   });
+
+});
+
 app.get('/createEvent', function (req, res) {
   //  res.send("test");
    //console.log(req.session.passport.user);
@@ -182,9 +196,9 @@ app.post('/joinEvent',  function (req, res) {
 
 app.post('/RSVP', function (req, res) {
 
-    console.log(req.session.passport.user);
-    console.log(req.body.eventCode);
-    db.get("SELECT email FROM users WHERE username = ?",  req.session.passport.user.username, function (err, row){
+    console.log("USER" + req.session.passport.user);
+    console.log("EVENT CODE" + req.body.eventCode);
+   /* db.get("SELECT email FROM users WHERE username = ?",  req.session.passport.user.username, function (err, row){
         console.log(row);
         mailgun.messages().send(
             {
@@ -196,9 +210,29 @@ app.post('/RSVP', function (req, res) {
             }, function (error, body) {
                     console.log(body);
                 })
-    })
-    db.run("INSERT INTO rsvp (recipients, event) VALUES ($recipients, $event);", {
-        $recipients: req.session.passport.user,
-        $event: req.body.eventCode,
-    })
+    }) */
+    console.log("Getting Here");
+    db.each("SELECT * FROM events where code=\"" + "test" + "\"", function(err, row) {
+        console.log("ROW: " + row.id);
+        db.run("INSERT INTO rsvp (recipients, event) VALUES ($recipients, $event);", {
+        $recipients: req.session.passport.user.id,
+        $event: row.id,
+        }); 
     });
+    res.redirect('/event/' + req.body.eventCode);
+});
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now())
+  }
+})
+var upload = multer({ storage: storage })
+app.post('/upload', function (req, res) {
+    
+    
+    
+});
