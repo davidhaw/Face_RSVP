@@ -4,12 +4,13 @@ var flash = require('connect-flash');
 var session = require("express-session"),
     bodyParser = require("body-parser");
 var exphbs = require('express-handlebars');
-
+var multer = require('multer');
+var mime = require('mime');
 var mailgun = require("mailgun-js");
 var api_key = '306a1da49f5eadabb3281dfd5bc82974-9ce9335e-be97d48f';
 var DOMAIN = 'sandboxc59f606b9e144225878ddd0e4d2398ef.mailgun.org';
 var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
-
+var fs  = require('fs');
 
 
 var passport = require('passport')
@@ -222,7 +223,7 @@ app.post('/RSVP', function (req, res) {
     res.redirect('/event/' + req.body.eventCode);
 });
 
-var storage = multer.diskStorage({
+/* var storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, 'uploads')
   },
@@ -230,9 +231,39 @@ var storage = multer.diskStorage({
     cb(null, file.fieldname + '-' + Date.now())
   }
 })
+
+var upload = multer({ storage: storage }) */
+
+// SET STORAGE
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+      var userId = req.session.passport.user.id;
+      var path = 'uploads/' + 'user-' + userId;
+      if (!fs.existsSync(path)) {
+          fs.mkdirSync(path);
+      }
+      cb(null, path);
+
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+  }
+})
+ 
 var upload = multer({ storage: storage })
-app.post('/upload', function (req, res) {
-    
-    
-    
-});
+//Uploading multiple files
+app.post('/upload', upload.array('myFiles', 12), (req, res, next) => {
+  const files = req.files
+  if (!files) {
+    const error = new Error('Please choose files')
+    error.httpStatusCode = 400
+    return next(error)
+  }
+    res.send(files)
+   /* for files
+            if (err) {
+                return console.log(err);
+            }
+            console.log("The file was saved!");
+        });
+*/ });

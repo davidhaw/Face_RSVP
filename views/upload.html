@@ -1,7 +1,8 @@
 <h1>Upload Photo Files</h1>
 
-<form action="/upload" method="post" multipart='urlencoded'>
-<p>Upload Photos of Your Face (No other faces, click HERE (Coming Soon) for photo guidlines)</p>
-<input type="file" accept=".jpg, .png">
-<button type="btn primary" type="submit">Upload Files</button>
+<!-- MULTIPLE FILES -->
+ 
+<form action="/upload"  enctype="multipart/form-data" method="POST">
+  Select images: <input type="file" name="myFiles" multiple>
+  <input type="submit" value="Upload your files"/>
 </form>
