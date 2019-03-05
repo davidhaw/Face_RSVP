@@ -103,6 +103,21 @@ app.get('/upload', function (req, res) {
 
 });
 
+
+app.get('/eventLive/:code', function (req, res) {
+  //  res.send("test");
+   //console.log(req.session.passport.user);
+   res.render('eventLive', {
+
+     //  data: {
+
+
+    //   }
+
+   });
+
+});
+
 app.get('/createEvent', function (req, res) {
   //  res.send("test");
    //console.log(req.session.passport.user);
