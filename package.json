@@ -6,6 +6,7 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "all": "0.0.0",
     "connect-flash": "^0.1.1",
     "cookie-parser": "~1.4.3",
     "cors": "^2.8.5",
@@ -26,6 +27,7 @@
     "passport": "^0.4.0",
     "passport-custom": "^1.0.5",
     "passport-local": "^1.0.0",
-    "sqlite3": "^4.0.4"
+    "sqlite3": "^4.0.4",
+    "webcamjs": "^1.0.25"
   }
 }
