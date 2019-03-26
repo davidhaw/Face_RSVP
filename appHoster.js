@@ -268,7 +268,9 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage })
 //Uploading multiple files
 app.post('/upload', upload.array('myFiles', 12), (req, res, next) => {
+  console.log(req.body);
   const files = req.files
+  console.log(files);
   if (!files) {
     const error = new Error('Please choose files')
     error.httpStatusCode = 400

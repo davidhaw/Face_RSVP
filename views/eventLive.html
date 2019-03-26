@@ -2,7 +2,7 @@
 <p> {{ data.name }}</p>
 <div id="results">Your captured image will appear here...</div>
 
-<h1>WebcamJS Test Page</h1>
+<h1>Live Event Viewer</h1>
 <h3>Demonstrates simple 320x240 capture &amp; display</h3>
 
 <div id="my_camera"></div>
@@ -30,6 +30,42 @@
 
 <!-- Code to handle taking the snapshot and displaying it locally -->
 <script language="JavaScript">
+
+      function blobToFile(theBlob, fileName){
+    //A Blob() is almost a File() - it's just missing the two properties below which we will add
+        theBlob.lastModifiedDate = new Date();
+        theBlob.name = fileName;
+        theBlob.type = "image/png";
+        return theBlob;
+      }
+
+      function dataURItoBlob(dataURI) {
+    // convert base64 to raw binary data held in a string
+    // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+      var byteString = atob(dataURI.split(',')[1]);
+
+    // separate out the mime component
+      var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+    // write the bytes of the string to an ArrayBuffer
+      var ab = new ArrayBuffer(byteString.length);
+      var ia = new Uint8Array(ab);
+      for (var i = 0; i < byteString.length; i++) {
+          ia[i] = byteString.charCodeAt(i);
+      }
+
+    //Old Code
+    //write the ArrayBuffer to a blob, and you're done
+    //var bb = new BlobBuilder();
+    //bb.append(ab);
+    //return bb.getBlob(mimeString);
+
+    //New Code
+      return new Blob([ab], {type: mimeString});
+
+
+    }
+
     function take_snapshot() {
         // take snapshot and get image data
         Webcam.snap( function(data_uri) {
@@ -38,7 +74,11 @@
                 '<h2>Here is your image:</h2>' + 
                 '<img src="'+data_uri+'"/>';
             var formData = new FormData();
-            formData.append('file', data_uri);
+            var blob = dataURItoBlob(data_uri);
+            var myBlob = new Blob();
+            var picture = blobToFile(blob, "live-image.png");
+            console.log(picture);
+            formData.append('myFiles', picture);
             $.ajax({
               type: "POST",
               url: '/upload',
