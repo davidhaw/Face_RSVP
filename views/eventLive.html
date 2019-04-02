@@ -3,7 +3,6 @@
 <div id="results">Your captured image will appear here...</div>
 
 <h1>Live Event Viewer</h1>
-<h3>Demonstrates simple 320x240 capture &amp; display</h3>
 
 <div id="my_camera"></div>
 
@@ -35,7 +34,7 @@
     //A Blob() is almost a File() - it's just missing the two properties below which we will add
         theBlob.lastModifiedDate = new Date();
         theBlob.name = fileName;
-        theBlob.type = "image/png";
+        theBlob.type = "image/jpg";
         return theBlob;
       }
 
@@ -68,6 +67,8 @@
 
     function take_snapshot() {
         // take snapshot and get image data
+
+
         Webcam.snap( function(data_uri) {
             // display results in page
             document.getElementById('results').innerHTML = 
@@ -76,12 +77,12 @@
             var formData = new FormData();
             var blob = dataURItoBlob(data_uri);
             var myBlob = new Blob();
-            var picture = blobToFile(blob, "live-image.png");
+            var picture = blobToFile(blob, "live-image.jpg");
             console.log(picture);
             formData.append('myFiles', picture);
             $.ajax({
               type: "POST",
-              url: '/upload',
+              url: '/tempUpload',
               processData: false,
               contentType: false,
               data: formData
@@ -89,5 +90,5 @@
            //   dataType: dataType
             });
         } );
-    }
+      }
 </script>

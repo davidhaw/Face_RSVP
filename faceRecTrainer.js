@@ -60,3 +60,9 @@ function addFacesToRecByFolder (recognizer, path, name, l) {
 }
 
 module.exports.addFacesToRecByFolder = addFacesToRecByFolder;
+
+module.exports.loadImages = loadImages;
+
+module.exports.detectFaces = detectFaces;
+
+module.exports.addFacesToRecognizer = addFacesToRecognizer;

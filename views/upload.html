@@ -6,3 +6,99 @@
   Select images: <input type="file" name="myFiles" multiple>
   <input type="submit" value="Upload your files"/>
 </form>
+
+
+<div id="results">Your captured image will appear here...</div>
+
+<h1>Add Photos of Face for Machine Learning Stuff</h1>
+
+<div id="my_camera"></div>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+
+<!-- First, include the Webcam.js JavaScript Library -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/gh/jhuckaby/webcamjs/webcam.min.js"></script>
+
+<!-- Configure a few settings and attach camera -->
+<script language="JavaScript">
+    Webcam.set({
+        width: 320,
+        height: 240,
+        image_format: 'jpeg',
+        jpeg_quality: 90
+    });
+    Webcam.attach( '#my_camera' );
+</script>
+
+<!-- A button for taking snaps -->
+<form>
+    <input type=button value="Take Snapshot" onClick="take_snapshot()">
+</form>
+
+<!-- Code to handle taking the snapshot and displaying it locally -->
+<script language="JavaScript">
+
+      function blobToFile(theBlob, fileName){
+    //A Blob() is almost a File() - it's just missing the two properties below which we will add
+        theBlob.lastModifiedDate = new Date();
+        theBlob.name = fileName;
+        theBlob.type = "image/jpg";
+        return theBlob;
+      }
+
+      function dataURItoBlob(dataURI) {
+    // convert base64 to raw binary data held in a string
+    // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+      var byteString = atob(dataURI.split(',')[1]);
+
+    // separate out the mime component
+      var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+    // write the bytes of the string to an ArrayBuffer
+      var ab = new ArrayBuffer(byteString.length);
+      var ia = new Uint8Array(ab);
+      for (var i = 0; i < byteString.length; i++) {
+          ia[i] = byteString.charCodeAt(i);
+      }
+
+    //Old Code
+    //write the ArrayBuffer to a blob, and you're done
+    //var bb = new BlobBuilder();
+    //bb.append(ab);
+    //return bb.getBlob(mimeString);
+
+    //New Code
+      return new Blob([ab], {type: mimeString});
+
+
+    }
+
+    function take_snapshot() {
+        // take snapshot and get image data
+
+        for (i = 0; i <= 10; i++){
+
+        Webcam.snap( function(data_uri) {
+            // display results in page
+            document.getElementById('results').innerHTML = 
+                '<h2>Here is your image:</h2>' + 
+                '<img src="'+data_uri+'"/>';
+            var formData = new FormData();
+            var blob = dataURItoBlob(data_uri);
+            var myBlob = new Blob();
+            var picture = blobToFile(blob, "live-image.jpg");
+            console.log(picture);
+            formData.append('myFiles', picture);
+            $.ajax({
+              type: "POST",
+              url: '/upload',
+              processData: false,
+              contentType: false,
+              data: formData
+             // success: success,
+           //   dataType: dataType
+            });
+        } );
+      }
+    }
+</script>

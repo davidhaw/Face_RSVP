@@ -6,11 +6,13 @@ var session = require("express-session"),
 var exphbs = require('express-handlebars');
 var multer = require('multer');
 var mime = require('mime');
+var mimeTypes = require ('mime-types');
 var mailgun = require("mailgun-js");
 var api_key = '306a1da49f5eadabb3281dfd5bc82974-9ce9335e-be97d48f';
 var DOMAIN = 'sandboxc59f606b9e144225878ddd0e4d2398ef.mailgun.org';
 var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 var fs  = require('fs');
+var trainer = require("./faceRecTrainer.js")
 
 
 var passport = require('passport')
@@ -261,13 +263,77 @@ var storage = multer.diskStorage({
 
   },
   filename: function (req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
+    console.log(file.mimetype);
+    console.log(file.originalname);
+    console.log(file)
+
+    cb(null, file.fieldname + '-' + Date.now() + "." +  mime.getExtension(file.mimetype));
   }
 })
  
+var tempStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+      var userId = req.session.passport.user.id;
+      var path = 'temp/' + 'user-' + userId;
+      if (!fs.existsSync(path)) {
+          fs.mkdirSync(path);
+      }
+      cb(null, path);
+
+  },
+  filename: function (req, file, cb) {
+    console.log(file.mimetype);
+    console.log(file.originalname);
+    console.log(file)
+
+    cb(null, file.fieldname + '-' + Date.now() + "." +  mime.getExtension(file.mimetype));
+  }
+})
+ 
+
 var upload = multer({ storage: storage })
+var tempUpload = multer ({ storage: tempStorage })
 //Uploading multiple files
 app.post('/upload', upload.array('myFiles', 12), (req, res, next) => {
+  console.log(req.body);
+  const files = req.files
+  console.log(files);
+  if (!files) {
+    const error = new Error('Please choose files')
+    error.httpStatusCode = 400
+    return next(error)
+  }
+  var filepaths = [];
+  files.forEach( function (file) {
+
+    filepaths.push(file.path);
+
+  });
+   console.log(filepaths);
+
+   /*
+
+    const recognizer = fr.FaceRecognizer();
+    var loadedImages = loadImages(filepaths);
+    var detectedFaceImages = detectFaces(loadedImages);
+
+    console.log(detectedFaceImages);
+    
+    trainer.addFacesToRecognizer(detectedFaceImages);
+
+   */
+
+
+  res.send(files)
+   /* for files
+            if (err) {
+                return console.log(err);
+            }
+            console.log("The file was saved!");
+        });
+*/ });
+
+app.post('/tempUpload', tempUpload.array('myFiles', 12), (req, res, next) => {
   console.log(req.body);
   const files = req.files
   console.log(files);
