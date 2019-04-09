@@ -311,8 +311,6 @@ app.post('/upload', upload.array('myFiles', 12), (req, res, next) => {
   });
    console.log(filepaths);
 
-   /*
-
     const recognizer = fr.FaceRecognizer();
     var loadedImages = loadImages(filepaths);
     var detectedFaceImages = detectFaces(loadedImages);
@@ -320,8 +318,7 @@ app.post('/upload', upload.array('myFiles', 12), (req, res, next) => {
     console.log(detectedFaceImages);
     
     trainer.addFacesToRecognizer(detectedFaceImages);
-
-   */
+    trainer.saveJSON(detectedFaceImages, "./");
 
 
   res.send(files)

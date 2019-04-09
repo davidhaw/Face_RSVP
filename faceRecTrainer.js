@@ -59,6 +59,14 @@ function addFacesToRecByFolder (recognizer, path, name, l) {
     
 }
 
+
+function saveJSON (recognizer, path) {
+    
+    const modelState = recognizer.serialize();
+    fs.writeFileSync(path + 'model.json', JSON.stringify(modelState));
+    
+}
+
 module.exports.addFacesToRecByFolder = addFacesToRecByFolder;
 
 module.exports.loadImages = loadImages;
@@ -66,3 +74,5 @@ module.exports.loadImages = loadImages;
 module.exports.detectFaces = detectFaces;
 
 module.exports.addFacesToRecognizer = addFacesToRecognizer;
+
+module.exports.saveJSON = saveJSON;
