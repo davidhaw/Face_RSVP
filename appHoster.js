@@ -241,17 +241,6 @@ app.post('/RSVP', function (req, res) {
     res.redirect('/event/' + req.body.eventCode);
 });
 
-/* var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads')
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.fieldname + '-' + Date.now())
-  }
-})
-
-var upload = multer({ storage: storage }) */
-
 // SET STORAGE
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -312,6 +301,8 @@ app.post('/upload', upload.array('myFiles', 12), (req, res, next) => {
   });
    console.log(filepaths);
 
+    // Once files are uploaded from server, they imeadietly get scanned to  get the faces and then that info is put into that user's json file.
+    // JSON file is afterwards used to check if the person is allowed to event
     const recognizer = fr.FaceRecognizer();
     var loadedImages = trainer.loadImages(filepaths);
     var detectedFaceImages = trainer.detectFaces(loadedImages);
@@ -320,8 +311,8 @@ app.post('/upload', upload.array('myFiles', 12), (req, res, next) => {
     
     trainer.addFacesToRecognizer(recognizer, detectedFaceImages, req.session.passport.user.id);
     var UserjsonPath = "./models/" + req.session.passport.user.id + "/";
-    if (fs.existsSync(UserjsonPath)) {
-
+    if (!fs.existsSync(UserjsonPath)) {
+      fs.mkdirSync(UserjsonPath);
     }
     trainer.saveJSON(recognizer, UserjsonPath);
 
