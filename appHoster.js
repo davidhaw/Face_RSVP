@@ -319,7 +319,11 @@ app.post('/upload', upload.array('myFiles', 12), (req, res, next) => {
     console.log(detectedFaceImages);
     
     trainer.addFacesToRecognizer(recognizer, detectedFaceImages, req.session.passport.user.id);
-    trainer.saveJSON(recognizer, "./");
+    var UserjsonPath = "./models/" + req.session.passport.user.id + "/";
+    if (fs.existsSync(UserjsonPath)) {
+
+    }
+    trainer.saveJSON(recognizer, UserjsonPath);
 
     console.log("Finished Training and saved to json model");
 
