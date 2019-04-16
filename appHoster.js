@@ -13,6 +13,7 @@ var DOMAIN = 'sandboxc59f606b9e144225878ddd0e4d2398ef.mailgun.org';
 var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 var fs  = require('fs');
 var trainer = require("./faceRecTrainer.js")
+var fr = require("face-recognition")
 
 
 var passport = require('passport')
@@ -153,7 +154,7 @@ app.use(flash());
 
 module.exports = app;
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.listen(port, () => console.log(`Face RSVP app listening on port ${port}!`))
 /*
 app.post('/login', function(req, res, next) {
   console.log("working 2");
@@ -220,7 +221,7 @@ app.post('/RSVP', function (req, res) {
         console.log(row);
         mailgun.messages().send(
             {
-                from: 'Mailgun Sandbox <postmaster@sandboxc59f606b9e144225878ddd0e4d2398ef.mailgun.org>',
+                from: 'Mailgun Sandbox <postmaster@sandboxc59f606b9e144225878ddd0e4d298ef.mailgun.org>',
                 to: req.session.passport.user.username + ' ' + "<" + row.email.replace(/(\r\n|\n|\r)/gm, "") + ">"
 ,
                 subject: 'Hello' +  req.session.passport.user.username,
@@ -312,13 +313,15 @@ app.post('/upload', upload.array('myFiles', 12), (req, res, next) => {
    console.log(filepaths);
 
     const recognizer = fr.FaceRecognizer();
-    var loadedImages = loadImages(filepaths);
-    var detectedFaceImages = detectFaces(loadedImages);
+    var loadedImages = trainer.loadImages(filepaths);
+    var detectedFaceImages = trainer.detectFaces(loadedImages);
 
     console.log(detectedFaceImages);
     
-    trainer.addFacesToRecognizer(detectedFaceImages);
-    trainer.saveJSON(detectedFaceImages, "./");
+    trainer.addFacesToRecognizer(recognizer, detectedFaceImages, req.session.passport.user.id);
+    trainer.saveJSON(recognizer, "./");
+
+    console.log("Finished Training and saved to json model");
 
 
   res.send(files)
