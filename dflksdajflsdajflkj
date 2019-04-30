@@ -1,0 +1,141 @@
+[33mcommit 2b3895804fc0c4ac9d6b71eaf7b829f52cdd1205[m[33m ([m[1;36mHEAD -> [m[1;32mstable[m[33m, [m[1;31morigin/stable[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: David <davidhaw2005@gmail.com>
+Date:   Tue Apr 16 17:41:42 2019 -0500
+
+    FS now creates directory for JSON if not made and added some comments explaining code.
+
+[33mcommit cae55bc4ee9fee7fb90fdaba1cd44e065cc9d54c[m
+Author: David <davidhaw2005@gmail.com>
+Date:   Mon Apr 15 20:02:14 2019 -0500
+
+    Save face json data into user folder
+
+[33mcommit b386513e866126137e9ccb9cf6c79271caa3205f[m
+Author: mechasparrow <mikipux7@gmail.com>
+Date:   Mon Apr 15 19:48:38 2019 -0500
+
+    Face recogntion training and save to json finally finsihed
+
+[33mcommit 452629c00fc151233dce8f8b085647011fbf3499[m
+Author: David <davidhaw2005@gmail.com>
+Date:   Tue Apr 9 00:46:55 2019 +0000
+
+    More face recognition things to the upload. After testing need to add JSON saving and using stuff.
+
+[33mcommit fc86f604c60ed128f3412fc13826cfae7f7f26dc[m
+Author: David <davidhaw2005@gmail.com>
+Date:   Tue Apr 2 01:02:10 2019 +0000
+
+    Saving with extension works and now working on implementing the algorithm
+
+[33mcommit 5785bf518e5d1541938b03d773f30f197cd63f78[m
+Author: David <davidhaw2005@gmail.com>
+Date:   Tue Mar 26 00:59:13 2019 +0000
+
+    Webcam saving works, but needs to add a callback to multer to not crash the server if no user is signed in and blob to file still doesn't work (File is missing .png at the end, once added is usable)
+
+[33mcommit 742d641a5a9616451ea13a980b6d7146a71be20d[m
+Author: David <davidhaw2005@gmail.com>
+Date:   Tue Mar 19 01:06:01 2019 +0000
+
+    Created webcam and need to convert data uri to file blob
+
+[33mcommit 69f434c67be841dbf48a89db0dd7f419bb08ffe2[m
+Author: David <davidhaw2005@gmail.com>
+Date:   Tue Mar 5 02:01:13 2019 +0000
+
+    Created Event Live and Live Cam. Needs testing with a machine with webcam
+
+[33mcommit c7479ff410d88206b9fee1f26896ae4d07a24edb[m
+Author: David <davidhaw2005@gmail.com>
+Date:   Tue Mar 5 01:47:49 2019 +0000
+
+    Multer user file/photo upload working! Now can start implementing the face recognition!
+
+[33mcommit 42718b463d01936963260d6794a35083c483414f[m
+Author: David <davidhaw2005@gmail.com>
+Date:   Tue Feb 26 02:01:11 2019 +0000
+
+     Finished RSVP (commented out email) and started doing the file server
+
+[33mcommit 82c644741de18c53ef7c670194f687990f98271f[m
+Author: David <davidhaw2005@gmail.com>
+Date:   Sun Feb 24 13:15:32 2019 -0600
+
+    Added RSVP add to database
+    
+    Adds the RSVP info into the database
+
+[33mcommit 184ce027ec2864fb5171f60fed3f25438abdd723[m
+Author: David <davidhaw2005@gmail.com>
+Date:   Tue Feb 19 02:01:00 2019 +0000
+
+    RSVP email and database
+
+[33mcommit d3427b69d90a8eac11c491b0ad312a40609ddf94[m
+Author: David <davidhaw2005@gmail.com>
+Date:   Tue Feb 12 02:01:42 2019 +0000
+
+    Added RSVP and event creation
+
+[33mcommit c817a124bd96ceaf7efc7ab19cf8987e140cd411[m
+Author: David <davidhaw2005@gmail.com>
+Date:   Tue Jan 29 19:51:45 2019 -0600
+
+    Added Sign Up link to signIn
+
+[33mcommit 03b960af54325e94ad1605faadfb006a32bb1cc7[m
+Author: David <davidhaw2005@gmail.com>
+Date:   Tue Jan 29 19:48:06 2019 -0600
+
+    (NEEDS WORK) Added the create event POST function
+    
+    Still needs some work on, gives out cannot POST /createEvent
+
+[33mcommit 7e4906112978a5bb058905223d0e227b71298121[m
+Author: David <davidhaw2005@gmail.com>
+Date:   Tue Jan 29 02:00:43 2019 +0000
+
+    More things to views and added table to database
+
+[33mcommit abb542669ca00614086f73d441bdb7bd926a0909[m
+Author: David <davidhaw2005@gmail.com>
+Date:   Tue Jan 29 01:21:29 2019 +0000
+
+    Changed to Handlebars and added jquery to main template
+
+[33mcommit ee58dde3b593431d1e0bb6d4bc4e8004fdf135fe[m
+Author: David <davidhaw2005@gmail.com>
+Date:   Sun Jan 27 20:19:30 2019 -0600
+
+    Added code into the new page files
+
+[33mcommit 623e01d9a1b0bd8fdc9bd1809fb03e6f014c2be6[m
+Author: David <davidhaw2005@gmail.com>
+Date:   Thu Jan 24 12:14:15 2019 -0600
+
+    Fixed readme header
+
+[33mcommit 95d56c67002b86b97db05c77304741232dabc7a4[m
+Author: David <davidhaw2005@gmail.com>
+Date:   Thu Jan 24 12:12:45 2019 -0600
+
+    Created and wrote the beginnings of readme
+
+[33mcommit 7c19774e0874513af8737e1970aeb57286d26e3f[m
+Author: David <davidhaw2005@gmail.com>
+Date:   Thu Jan 24 11:56:45 2019 -0600
+
+    Updated Main Layout and created some more pages
+
+[33mcommit 9123f8f0c63fe4706a7fc3d648c857947e794e75[m
+Author: David <davidhaw2005@gmail.com>
+Date:   Thu Jan 24 11:56:18 2019 -0600
+
+    Updated Main Layout and created some more pages
+
+[33mcommit a2166c9c1fe8e6318c2ccd346a8a9ae14e1bab3c[m
+Author: David <davidhaw2005@gmail.com>
+Date:   Tue Jan 22 01:42:37 2019 +0000
+
+    Stable with account view

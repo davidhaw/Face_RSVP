@@ -213,6 +213,12 @@ app.post('/joinEvent',  function (req, res) {
 
 });
 
+app.post('/eventLiveRed', function (req, res) {
+
+    res.redirect('/eventLive/' + req.body.eventLiveCode);
+
+});
+
 app.post('/RSVP', function (req, res) {
 
     console.log("USER" + req.session.passport.user);
@@ -345,3 +351,46 @@ app.post('/tempUpload', tempUpload.array('myFiles', 12), (req, res, next) => {
             console.log("The file was saved!");
         });
 */ });
+
+app.post('/checkFace', function (req, res) {
+
+  var recipients = getRecipients(1);
+
+  console.log("Recipients", recipients);
+  console.log("Req Files", req.files);
+  
+
+  const recognizer = fr.FaceRecognizer();
+
+});
+
+function getRecipients(eventID) {
+
+  return new Promise(function (resolve, reject) {
+
+    var recipients = db.all("SELECT id, recipients, event FROM rsvp", function (err, rows) {
+      if (err){
+        reject(err);
+      }
+      resolve (rows.map(function (row) {
+  
+        if (row.event == eventID) {
+  
+          console.log(row);
+          return(rows.recipients);
+          
+        }
+
+        else {
+          
+          return null;
+
+        }
+  
+      }));
+  
+    });  
+
+  });
+
+}
