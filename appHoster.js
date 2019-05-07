@@ -14,7 +14,7 @@ var mailgun = require('mailgun-js')({apiKey: api_key, domain: DOMAIN});
 var fs  = require('fs');
 var trainer = require("./faceRecTrainer.js")
 var fr = require("face-recognition")
-
+var mkdirp = require('mkdirp');
 
 var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy;
@@ -316,9 +316,14 @@ app.post('/upload', upload.array('myFiles', 12), (req, res, next) => {
     console.log(detectedFaceImages);
     
     trainer.addFacesToRecognizer(recognizer, detectedFaceImages, req.session.passport.user.id);
-    var UserjsonPath = "./models/" + req.session.passport.user.id + "/";
+    var UserjsonPath = "./models/" + req.session.passport.user.id + '/';
     if (!fs.existsSync(UserjsonPath)) {
-      fs.mkdirSync(UserjsonPath);
+      console.log("Please make the DIR")
+      mkdirp(UserjsonPath, function (err) {
+        if (err) console.error(err);
+        else console.log("No mkdirp issues!");
+        
+      });
     }
     trainer.saveJSON(recognizer, UserjsonPath);
 
@@ -360,7 +365,21 @@ app.post('/checkFace', function (req, res) {
   console.log("Req Files", req.files);
   
 
-  const recognizer = fr.FaceRecognizer();
+  recipients.then(function(recipients) {
+
+    const recognizer = fr.FaceRecognizer();
+    console.log("All Recipients:", recipients);
+    recipients.forEach(function(recipient) {
+      console.log("Recipient", recipient);
+      var pathrecipient = "./models/" + recipient + '/model.json';
+      const modelState = require(pathrecipient)
+      recognizer.load(modelState)
+      
+
+    });
+
+  });
+
 
 });
 
@@ -372,12 +391,12 @@ function getRecipients(eventID) {
       if (err){
         reject(err);
       }
-      resolve (rows.map(function (row) {
+      let recp = rows.map(function (row) {
   
         if (row.event == eventID) {
   
           console.log(row);
-          return(rows.recipients);
+          return(row.recipients);
           
         }
 
@@ -387,8 +406,9 @@ function getRecipients(eventID) {
 
         }
   
-      }));
-  
+      });
+      console.log(recp);
+      resolve(recp);
     });  
 
   });

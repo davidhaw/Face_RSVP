@@ -1,0 +1,5 @@
+1. Make page to go to specific event live
+
+2. Make you are not signed in page that doesn't crash entire server
+
+3. Make the actual face checker
