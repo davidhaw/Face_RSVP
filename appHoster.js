@@ -15,7 +15,8 @@ var fs  = require('fs');
 var trainer = require("./faceRecTrainer.js")
 var fr = require("face-recognition")
 var mkdirp = require('mkdirp');
-
+var filereaderRequired = require('filereader');
+var eFileupload = require('express-fileupload');
 var passport = require('passport')
   , LocalStrategy = require('passport-local').Strategy;
 var CustomStrategy = require('passport-custom').Strategy;
@@ -70,7 +71,7 @@ var app = express();
 
 app.use(passport.initialize());
 app.use(passport.session());
-
+app.use(eFileupload());
 app.use(express.static("public"));
 app.use(session({ secret: "cats" }));
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -312,7 +313,7 @@ app.post('/upload', upload.array('myFiles', 12), (req, res, next) => {
     const recognizer = fr.FaceRecognizer();
     var loadedImages = trainer.loadImages(filepaths);
     var detectedFaceImages = trainer.detectFaces(loadedImages);
-
+    console.log("Detecting Data");
     console.log(detectedFaceImages);
     
     trainer.addFacesToRecognizer(recognizer, detectedFaceImages, req.session.passport.user.id);
@@ -364,6 +365,7 @@ app.post('/checkFace', function (req, res) {
   console.log("Recipients", recipients);
   console.log("Req Files", req.files);
   
+  fs.writeFileSync("/var/tmp/test.jpg", req.files['myFiles']['data']);
 
   recipients.then(function(recipients) {
 
@@ -375,6 +377,17 @@ app.post('/checkFace', function (req, res) {
       const modelState = require(pathrecipient)
       recognizer.load(modelState)
       
+
+    /*  var reader = new filereaderRequired();
+      reader.readAsDataURL(req.files); 
+      reader.onloadend = function() {
+        base64data = reader.result;                
+        console.log(base64data);
+        var base64Image = base64data;
+      }
+        */
+      const bestPrediction = recognizer.predictBest(fr.loadImage("/var/tmp/test.jpg"));
+      console.log(bestPrediction);
 
     });
 
