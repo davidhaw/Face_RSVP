@@ -31,6 +31,8 @@ function hashPassword(password, salt) {
   return hash.digest('hex');
 }
 
+var tmp = require('tmp');
+
 passport.use('local-login', new CustomStrategy(function(req, done) {
   console.log("working 1");
   db.get('SELECT salt FROM users WHERE username = ?', req.body.username, function(err, row) {
@@ -248,61 +250,34 @@ app.post('/RSVP', function (req, res) {
     res.redirect('/event/' + req.body.eventCode);
 });
 
-// SET STORAGE
-var storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-      var userId = req.session.passport.user.id;
-      var path = 'uploads/' + 'user-' + userId;
-      if (!fs.existsSync(path)) {
-          fs.mkdirSync(path);
-      }
-      cb(null, path);
 
-  },
-  filename: function (req, file, cb) {
-    console.log(file.mimetype);
-    console.log(file.originalname);
-    console.log(file)
-
-    cb(null, file.fieldname + '-' + Date.now() + "." +  mime.getExtension(file.mimetype));
-  }
-})
- 
-var tempStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-      var userId = req.session.passport.user.id;
-      var path = 'temp/' + 'user-' + userId;
-      if (!fs.existsSync(path)) {
-          fs.mkdirSync(path);
-      }
-      cb(null, path);
-
-  },
-  filename: function (req, file, cb) {
-    console.log(file.mimetype);
-    console.log(file.originalname);
-    console.log(file)
-
-    cb(null, file.fieldname + '-' + Date.now() + "." +  mime.getExtension(file.mimetype));
-  }
-})
- 
-
-var upload = multer({ storage: storage })
-var tempUpload = multer ({ storage: tempStorage })
+// https://github.com/richardgirges/express-fileupload/tree/master/example#basic-file-upload
 //Uploading multiple files
-app.post('/upload', upload.array('myFiles', 12), (req, res, next) => {
-  console.log(req.body);
+app.post('/upload'), function(req,res) {
+  res.send("OKAY!");
+  /**
+  console.log(req);
   const files = req.files
+  console.log("Training Faces")
   console.log(files);
   if (!files) {
     const error = new Error('Please choose files')
     error.httpStatusCode = 400
     return next(error)
   }
+
+  //Express File Ulpoad (Currently transitioning from multr to this)
+  var fileUpload = req.files.myFiles;
+  fileUpload.mv('upload/epic/epicUpload.jpg', function(err) {
+    if (err)
+      return res.status(500).send(err);
+
+    res.send('File uploaded!');
+  });
+
   var filepaths = [];
   files.forEach( function (file) {
-
+ 
     filepaths.push(file.path);
 
   });
@@ -315,7 +290,7 @@ app.post('/upload', upload.array('myFiles', 12), (req, res, next) => {
     var detectedFaceImages = trainer.detectFaces(loadedImages);
     console.log("Detecting Data");
     console.log(detectedFaceImages);
-    
+     
     trainer.addFacesToRecognizer(recognizer, detectedFaceImages, req.session.passport.user.id);
     var UserjsonPath = "./models/" + req.session.passport.user.id + '/';
     if (!fs.existsSync(UserjsonPath)) {
@@ -338,25 +313,8 @@ app.post('/upload', upload.array('myFiles', 12), (req, res, next) => {
             }
             console.log("The file was saved!");
         });
-*/ });
-
-app.post('/tempUpload', tempUpload.array('myFiles', 12), (req, res, next) => {
-  console.log(req.body);
-  const files = req.files
-  console.log(files);
-  if (!files) {
-    const error = new Error('Please choose files')
-    error.httpStatusCode = 400
-    return next(error)
-  }
-    res.send(files)
-   /* for files
-            if (err) {
-                return console.log(err);
-            }
-            console.log("The file was saved!");
-        });
-*/ });
+*/ 
+};
 
 app.post('/checkFace', function (req, res) {
 
@@ -365,7 +323,8 @@ app.post('/checkFace', function (req, res) {
   console.log("Recipients", recipients);
   console.log("Req Files", req.files);
   
-  fs.writeFileSync("/var/tmp/test.jpg", req.files['myFiles']['data']);
+  fs.writeFileSync("/var/tmp/test.jpg", req.files['myNonMultrFiles']['data']);
+
 
   recipients.then(function(recipients) {
 

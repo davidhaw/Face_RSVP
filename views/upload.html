@@ -76,29 +76,29 @@
     function take_snapshot() {
         // take snapshot and get image data
 
-        for (i = 0; i <= 10; i++){
+       // for (i = 0; i <= 10; i++){
 
-        Webcam.snap( function(data_uri) {
-            // display results in page
-            document.getElementById('results').innerHTML = 
-                '<h2>Here is your image:</h2>' + 
-                '<img src="'+data_uri+'"/>';
-            var formData = new FormData();
-            var blob = dataURItoBlob(data_uri);
-            var myBlob = new Blob();
-            var picture = blobToFile(blob, "live-image.jpg");
-            console.log(picture);
-            formData.append('myFiles', picture);
-            $.ajax({
-              type: "POST",
-              url: '/upload',
-              processData: false,
-              contentType: false,
-              data: formData
-             // success: success,
-           //   dataType: dataType
-            });
-        } );
+          Webcam.snap( function(data_uri) {
+              // display results in page
+              document.getElementById('results').innerHTML = 
+                  '<h2>Here is your image:</h2>' + 
+                  '<img src="'+data_uri+'"/>';
+              var formData = new FormData();
+              var blob = dataURItoBlob(data_uri);
+              var myBlob = new Blob();
+              var picture = blobToFile(blob, "live-image.jpg");
+              console.log(picture);
+              formData.append('myFiles', picture);
+              $.ajax({
+                type: "POST",
+                url: '/upload',
+                processData: false,
+                contentType: false,
+                data: formData
+              // success: success,
+            //   dataType: dataType
+              });
+          } );
       }
-    }
+   // }
 </script>
